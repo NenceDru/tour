@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты поиска - Праздник в каждый дом</title>
+    <link href="CSS/css.css" rel="stylesheet">
+    <script defer>
+
+
+        // Функция для получения параметров из URL
+        function getSearchParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const from = urlParams.get('from');
+            const to = urlParams.get('to');
+            const date = urlParams.get('date');
+            const nights = urlParams.get('nights');
+            const people = urlParams.get('people');
+            
+            // Обновляем информацию о параметрах поиска
+            document.getElementById('search-from').textContent = getSourceName(from);
+            document.getElementById('search-to').textContent = getWhereName(to);
+            document.getElementById('search-date').textContent = formatDate(date);
+            document.getElementById('search-nights').textContent = nights;
+            document.getElementById('search-people').textContent = people;
+            var dateLabels = document.querySelectorAll('.date')
+            
+            dateLabels.forEach(dateLabel => {
+                dateLabel.textContent = formatDate(date)
+            });
+
+            //console.log(document.querySelectorAll(".location-info a"))
+            document.querySelectorAll(".location-info a").forEach(a => {
+                var curHref = a.getAttribute("href")
+                //console.log(curHref)
+                curHref += `&from=${from}&to=${to}&date=${date}&nights=${nights}&people=${people}`
+                a.setAttribute('href', curHref);
+            });
+        }
+
+
+        
+        // Преобразуем код c места отправки в название
+        function getSourceName(sourceCode) {
+            const source = {
+                'moscow': 'Москва',
+                'spb': 'Санкт-Петербург',
+                'ekb': 'Екатеринбург'
+            };
+            return source[sourceCode] || sourceCode;
+        }
+
+        // Преобразуем код в место отправки в название
+        function getWhereName(whereCode) {
+            const where = {
+                'turkey': 'Турция',
+                'thailand': 'Тайланд'
+            };
+            return where[whereCode] || whereCode;
+        }
+        
+
+        // Форматируем дату в привычный вид
+        function formatDate(dateString) {
+            if (!dateString) return 'Дата не указана';
+            
+            const date = new Date(dateString);
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return date.toLocaleDateString('ru-RU', options);
+        }
+        
+        // Вызываем функцию при загрузке страницы
+        window.onload = getSearchParams;
+    </script>
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="https://avatars.mds.yandex.net/i?id=e849ad24a5747084da7a1b28eb3476cf2cd65e7c-5294721-images-thumbs&n=13">
+                    <span>Малибу</span>
+                </div>
+                <div class="contacts-header">
+                    <p>+7 (123) 456-78-90</p>
+                    <p>info-malibu-travel@gmail.ru</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Навигация -->
+    <nav>
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="index.html">Главная страница</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Основное содержимое -->
+    <main class="container search-results">
+        <h1>Доступные туры</h1>
+        <div class="search-params">
+            <p><strong>Откуда:</strong> <span id="search-from">Москва</span></p>
+            <p><strong>Куда:</strong> <span id="search-to">Москва</span></p>
+            <p><strong>Дата:</strong> <span id="search-date">15 декабря 2023</span></p>
+            <p><strong>Количество ночей:</strong> <span id="search-nights">1</span></p>
+            <p><strong>Количество людей:</strong> <span id="search-people">5 взрослых, 10 детей</span></p>
+        </div>
+
+        <div class="locations-list">
+            <!-- Локация 1 -->
+            <div class="location-card">
+                <div class="location-image">
+                    <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Детский центр Волшебный замок">
+                </div>
+                <div class="location-info">
+                    <h2>Rixos Premium Belek 4*</h2>
+                    <p class="address">Всё включено</p>
+                    <p class="date">15 декабря 2023</p>
+                    <p class="zones">Доступно</p>
+                    <div class="prices">
+                        <span> 55 000 ₽</span>
+                    </div>
+                    <a href="booking.html?location=liberty-lara" class="select-button">Забранировать</a>
+                </div>
+            </div>
+
+            <!-- Локация 2 -->
+            <div class="location-card">
+                <div class="location-image">
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Парк развлечений">
+                </div>
+                <div class="location-info">
+                    <h2>Titanic Deluxe Golf Belek 5*</h2>
+                    <p class="address">Ультра всё включено</p>
+                    <p class="date">15 декабря 2023</p>
+                    <p class="zones">Доступно</p>
+                    <div class="prices">
+                        <span> 75 000 ₽</span>
+                    </div>
+                    <a href="booking.html?location=rixos-belek" class="select-button">Забранировать</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer id="contacts">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>О компании</h3>
+                    <p>Туристическое агентство "Малибу" - это профессиональный подход к организации вашего отдыха с 2010 года.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> г. Волгоград, ул. Туристическая, 15</li>
+                        <li><i class="fas fa-phone"></i> +7 (123) 456-78-90</li>
+                        <li><i class="fas fa-envelope"></i> info@malibu-travel.ru</li>
+                        <li><i class="fas fa-clock"></i> Пн-Пт: 10:00 - 20:00</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Туристическое агентство "Малибу". Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

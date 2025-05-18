@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бронирование тура - Турагентство Малибу</title>
+    <link href="CSS/css.css" rel="stylesheet">
+    <script defer>
+
+        // Функция для получения параметров из URL
+        function getBookingParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hotel = urlParams.get('location');
+            const date = urlParams.get('date');
+            const nights = urlParams.get('nights');
+            const people = urlParams.get('people');
+            const from = urlParams.get('from');
+            const to = urlParams.get('to');
+
+            // Устанавливаем данные о туре
+            setTourInfo(hotel);
+            
+            // Заполняем параметры бронирования
+            document.getElementById('tour-date').textContent = formatDate(date) + ' (' + nights + ' ночей)';
+            document.getElementById('tour-people').textContent = people + ' человек';
+            document.getElementById('tour-from').textContent = getSourceName(from);
+            document.getElementById('tour-to').textContent = getWhereName(to);
+            
+            // Устанавливаем скрытые поля формы
+            document.getElementById('hotel').value = hotel;
+            document.getElementById('booking-date').value = date;
+            document.getElementById('booking-nights').value = nights;
+            document.getElementById('booking-people').value = people;
+
+            document.getElementById('people-count').textContent = people;
+            // Рассчитываем и устанавливаем цену
+            calculatePrice(hotel, people);
+        }
+        
+        // Устанавливаем информацию о выбранном отеле
+        function setTourInfo(hotelCode) {
+            const hotels = {
+                'liberty-lara': {
+                    name: 'Rixos Premium Belek 4*',
+                    image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
+                    features: ['Все включено', '1 бассейн', 'SPA-центр', 'SPA-центр', 'Wi-Fi'],
+                    price: 55000
+                },
+                'rixos-belek': {
+                    name: 'Titanic Deluxe Golf Belek 5*',
+                    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
+                    features: ['Ультра всё включено', '2 бассейна', 'SPA-центр'],
+                    price: 75000
+                },
+            };
+            
+            const hotel = hotels[hotelCode] || hotels['liberty-lara'];
+
+            document.getElementById('tour-name').textContent = hotel.name;
+            document.getElementById('tour-image').src = hotel.image;
+            document.getElementById('tour-image').alt = hotel.name;
+            
+            const featuresList = document.getElementById('tour-features');
+            featuresList.innerHTML = '';
+            hotel.features.forEach(feature => {
+                const li = document.createElement('li');
+                li.textContent = feature;
+                featuresList.appendChild(li);
+            });
+        }
+        
+        // Рассчитываем общую стоимость
+        function calculatePrice(hotelCode, people) {
+            const prices = {
+                'liberty-lara': 55000,
+                'rixos-belek': 75000,
+            };
+            
+            const pricePerPerson = prices[hotelCode] || 35600;
+            const total = pricePerPerson * Number(people);
+            
+            document.getElementById('price-per-person').textContent = pricePerPerson.toLocaleString('ru-RU') + ' ₽';
+            document.getElementById('price-total').textContent = total.toLocaleString('ru-RU') + ' ₽';
+        }
+        
+        // Преобразуем код c места отправки в название
+        function getSourceName(sourceCode) {
+            const source = {
+                'moscow': 'Москва',
+                'spb': 'Санкт-Петербург',
+                'ekb': 'Екатеринбург'
+            };
+            return source[sourceCode] || sourceCode;
+        }
+
+        // Преобразуем код в место отправки в название
+        function getWhereName(whereCode) {
+            const where = {
+                'turkey': 'Турция',
+                'thailand': 'Тайланд'
+            };
+            return where[whereCode] || whereCode;
+        }
+        
+        // Форматируем дату в привычный вид
+        function formatDate(dateString) {
+            if (!dateString) return 'Дата не указана';
+            
+            const date = new Date(dateString);
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return date.toLocaleDateString('ru-RU', options);
+        }
+        
+        // Обработка отправки формы
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            // Здесь можно добавить валидацию формы
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            // В реальном приложении здесь будет отправка данных на сервер
+            alert('Бронирование успешно отправлено! Мы свяжемся с вами для подтверждения.');
+            
+            // Перенаправление на страницу благодарности
+            // window.location.href = 'thank-you.html';
+        }
+        
+        // Вызываем функции при загрузке страницы
+        window.onload = function() {
+            getBookingParams();
+            document.getElementById('booking-form').addEventListener('submit', handleSubmit);
+        };
+    </script>
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="https://avatars.mds.yandex.net/i?id=e849ad24a5747084da7a1b28eb3476cf2cd65e7c-5294721-images-thumbs&n=13">
+                    <span>Малибу</span>
+                </div>
+                <div class="contacts-header">
+                    <p>+7 (123) 456-78-90</p>
+                    <p>info-malibu-travel@gmail.ru</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основное содержимое -->
+    <main class="container booking-page">
+        <h1 class="booking-title">Бронирование тура</h1>
+        
+        <!-- Информация о туре -->
+        <div class="tour-summary">
+            <h2 id="tour-name">Liberty Hotels Lara 5*</h2>
+            <div class="tour-image">
+                <img id="tour-image" src="" alt="">
+            </div>
+            <div class="tour-info-grid">
+                <div class="tour-info-item">
+                    <strong>Даты тура:</strong> <span id="tour-date">15 июля 2023 (7 ночей)</span>
+                </div>
+                <div class="tour-info-item">
+                    <strong>Количество человек:</strong> <span id="tour-people">2 человека</span>
+                </div>
+                <div class="tour-info-item">
+                    <strong>Откуда:</strong> <span id="tour-from">Москва</span>
+                </div>
+                <div class="tour-info-item">
+                    <strong>Куда:</strong> <span id="tour-to">Турция</span>
+                </div>
+            </div>
+            <h3 style="margin-top: 20px; color: #1E90FF;">Удобства отеля:</h3>
+            <ul id="tour-features" style="list-style-position: inside; color: #666;">
+                <li>Все включено</li>
+                <li>3 бассейна</li>
+                <li>SPA-центр</li>
+                <li>Wi-Fi</li>
+            </ul>
+        </div>
+        
+        <!-- Форма бронирования -->
+        <form id="booking-form" class="booking-form">
+            <input type="hidden" id="hotel" name="hotel">
+            <input type="hidden" id="booking-date" name="date">
+            <input type="hidden" id="booking-nights" name="nights">
+            <input type="hidden" id="booking-people" name="people">
+            
+            <h2>Данные туриста</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first-name">Имя*</label>
+                    <input type="text" id="first-name" name="first-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last-name">Фамилия*</label>
+                    <input type="text" id="last-name" name="last-name" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email*</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Телефон*</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="passport">Серия и номер паспорта*</label>
+                <input type="text" id="passport" name="passport" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="comment">Комментарий к заказу</label>
+                <input type="text" id="comment" name="comment">
+            </div>
+            
+            <button type="submit" class="submit-button">Подтвердить бронирование</button>
+        </form>
+        
+        <!-- Панель с итогами -->
+        <div class="booking-summary">
+            <h2>Ваше бронирование</h2>
+            
+            <div class="price-item">
+                <span>Тур:</span>
+                <span id="price-per-person">35 600 ₽</span>
+            </div>
+            
+            <div class="price-item">
+                <span>Количество человек:</span>
+                <span id="people-count">2</span>
+            </div>
+            
+            <div class="price-total">
+                <span>Итого:</span>
+                <span id="price-total">71 200 ₽</span>
+            </div>
+            
+            <div style="margin-top: 30px; font-size: 14px; color: #666;">
+                <p>* Цена указана за всех туристов</p>
+                <p>* После отправки формы с вами свяжется менеджер для подтверждения бронирования</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer id="contacts">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>О компании</h3>
+                    <p>Туристическое агентство "Малибу" - это профессиональный подход к организации вашего отдыха с 2010 года.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> г. Волгоград, ул. Туристическая, 15</li>
+                        <li><i class="fas fa-phone"></i> +7 (123) 456-78-90</li>
+                        <li><i class="fas fa-envelope"></i> info@malibu-travel.ru</li>
+                        <li><i class="fas fa-clock"></i> Пн-Пт: 10:00 - 20:00</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Туристическое агентство "Малибу". Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
